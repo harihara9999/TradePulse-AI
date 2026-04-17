@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradePulse | Market Intelligence</title>
+    <!-- Modern Elegant Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-base: #f0f4f8;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #18181b;
+            --primary-hover: #27272a;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --danger: #ef4444;
+            --surface: rgba(255, 255, 255, 0.75);
+            --surface-border: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding-bottom: 4rem;
+            overflow-x: hidden;
+        }
+
+        /* Beautiful Liquid Mesh Gradient Background */
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -10;
+            background: #e0e7ff;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -9;
+            opacity: 0.7;
+            animation: moveBlobs 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            top: -10%; left: -10%;
+            width: 50vw; height: 50vw;
+            background: #a78bfa; /* Soft Purple */
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            bottom: -20%; right: -10%;
+            width: 60vw; height: 60vw;
+            background: #93c5fd; /* Soft Blue */
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            bottom: 20%; left: 30%;
+            width: 40vw; height: 40vw;
+            background: #fbcfe8; /* Soft Pink */
+            animation-delay: -10s;
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes moveBlobs {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5vw, 5vh) scale(1.1); }
+            100% { transform: translate(-5vw, -5vh) scale(0.95); }
+        }
+
+        header {
+            width: 100%;
+            padding: 5rem 1.5rem 3rem;
+            text-align: center;
+            max-width: 800px;
+            animation: blockFadeIn 0.8s ease-out forwards;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.04em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 750px;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Frosted Glass UI */
+        .glass-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255,255,255,0.7);
+            position: relative;
+            animation: blockFadeIn 0.8s ease-out forwards 0.2s;
+            opacity: 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-left: 0.2rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.2rem;
+            color: var(--text-muted);
+            width: 20px;
+            height: 20px;
+            transition: color 0.3s;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 14px;
+            padding: 1rem 1rem 1rem 3rem;
+            color: var(--text-main);
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+            outline: none;
+        }
+
+        input:placeholder-shown {
+            color: #94a3b8;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), 0 4px 6px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+        }
+        
+        input:focus + .input-icon, .input-wrapper:focus-within .input-icon {
+            color: var(--accent);
+        }
+
+        /* Solid Elegant Button */
+        button.primary-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 1rem 2rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button.primary-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        button.primary-btn:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            opacity: 0.7;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
+
+        /* Quick Action Tags Section */
+        .history-section {
+            margin-top: 1.5rem;
+        }
+        
+        .trending-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            padding-left: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .scroll-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .pill {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(0,0,0,0.05);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .pill.trending {
+            background: rgba(255,255,255,0.8);
+            border-color: rgba(59, 130, 246, 0.2);
+            color: var(--accent);
+        }
+
+        .pill:hover {
+            background: rgba(255,255,255,1);
+            border-color: rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Soft Loading Visual */
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+        }
+        
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        /* Results Engine */
+        .results-container {
+            display: none;
+            width: 100%;
+        }
+
+        .results-container.visible {
+            display: block;
+        }
+
+        .controls-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .action-btn {
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(0,0,0,0.05);
+            color: var(--text-main);
+            border-radius: 12px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            backdrop-filter: blur(10px);
+        }
+        
+        .action-btn:hover {
+            background: white;
+            border-color: rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .error-message {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--danger);
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Fluid Typography and Formatting */
+        .markdown-body {
+            line-height: 1.8;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
+        .markdown-body h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.03em;
+        }
+
+        .markdown-body h2 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .markdown-body h3 {
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .markdown-body p { margin-bottom: 1.2rem; color: #334155; }
+        .markdown-body strong { font-weight: 700; color: #0f172a; }
+        .markdown-body ul, .markdown-body ol { margin-bottom: 1.2rem; padding-left: 1.5rem; color: #334155;}
+        .markdown-body li { margin-bottom: 0.5rem; }
+        
+        .markdown-body blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+            color: var(--text-main);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        /* Floating Action Button */
+        .fab-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            z-index: 100;
+        }
+        
+        .fab-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        
+        .fab-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+            background: var(--primary-hover);
+        }
+
+        @keyframes blockFadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0px); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .glass-card { padding: 1.5rem; }
+            .fab-btn { bottom: 1.5rem; right: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header>
+        <h1>TradePulse</h1>
+        <p>Market Intelligence & Trade Opportunities</p>
+    </header>
+
+    <main class="container">
+        <!-- Dashboard Core Box -->
+        <div class="glass-card">
+            <div class="loading-overlay" id="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">Analyzing market patterns...</div>
+            </div>
+
+            <div class="trending-section">
+                <div class="section-label"><i data-lucide="trending-up" style="width: 14px; height: 14px;"></i> Trending Now</div>
+                <div class="scroll-pills">
+                    <div class="pill trending" onclick="triggerSearch('Artificial Intelligence')"><i data-lucide="cpu" style="width: 14px; height: 14px;"></i>AI & Semiconductors</div>
+                    <div class="pill trending" onclick="triggerSearch('Green Energy')"><i data-lucide="leaf" style="width: 14px; height: 14px;"></i>Green Energy</div>
+                    <div class="pill trending" onclick="triggerSearch('FinTech')"><i data-lucide="credit-card" style="width: 14px; height: 14px;"></i>FinTech</div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="sector">Market Sector</label>
+                <div class="input-wrapper">
+                    <i data-lucide="compass" class="input-icon"></i>
+                    <input type="text" id="sector" placeholder="e.g. Pharmaceuticals, FinTech, Agriculture..." autocomplete="off">
+                </div>
+            </div>
+            
+            <button class="primary-btn" id="analyze-btn">
+                <i data-lucide="bar-chart-2"></i> Generate Market Report
+            </button>
+            
+            <div class="history-section" id="history-box" style="display: none;">
+                <div class="section-label"><i data-lucide="clock" style="width: 14px; height: 14px;"></i> Recent Searches</div>
+                <div class="scroll-pills" id="history-pills"></div>
+            </div>
+
+            <div class="error-message" id="error-box" style="display: none;"></div>
+        </div>
+
+        <!-- Rendered Display Array -->
+        <div class="results-container" id="results-box">
+            <div class="controls-bar">
+                <button class="action-btn" onclick="copyMarkdown()">
+                    <i data-lucide="copy" style="width: 16px; height: 16px;"></i> Copy Result
+                </button>
+                <button class="action-btn" onclick="downloadPDF()">
+                    <i data-lucide="download" style="width: 16px; height: 16px;"></i> Export PDF
+                </button>
+            </div>
+            
+            <div class="glass-card" style="padding: 3rem;">
+                <div class="markdown-body" id="report-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scroll to Top FAB -->
+    <button class="fab-btn" id="fab-btn" onclick="scrollToTop()" title="Back to top">
+        <i data-lucide="chevron-up"></i>
+    </button>
+
+    <script>
+        lucide.createIcons();
+        marked.setOptions({ breaks: true, gfm: true });
+
+        // Application State
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const sectorInput = document.getElementById('sector');
+        const errorBox = document.getElementById('error-box');
+        const resultsBox = document.getElementById('results-box');
+        const reportContent = document.getElementById('report-content');
+        const loadingOverlay = document.getElementById('loading');
+        const historyBox = document.getElementById('history-box');
+        const historyPills = document.getElementById('history-pills');
+        
+        let storedMarkdown = "";
+
+        const fabBtn = document.getElementById('fab-btn');
+
+        // Scroll Event for FAB
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                fabBtn.classList.add('visible');
+            } else {
+                fabBtn.classList.remove('visible');
+            }
+        });
+
+        window.scrollToTop = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Tag History Management
+        let history = JSON.parse(localStorage.getItem('tradepulse_history')) || [];
+        function updateHistory() {
+            if(history.length > 0) {
+                historyBox.style.display = 'block';
+                historyPills.innerHTML = history.map(item => `
+                    <div class="pill" onclick="triggerSearch('${item}')">
+                        <i data-lucide="search" style="width: 14px; height: 14px;"></i>
+                        ${item}
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            }
+        }
+        updateHistory();
+        
+        window.triggerSearch = function(val) {
+            sectorInput.value = val;
+            performAnalysis();
+        }
+
+        sectorInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') performAnalysis();
+        });
+
+        analyzeBtn.addEventListener('click', performAnalysis);
+
+        async function performAnalysis() {
+            const sector = sectorInput.value.trim();
+
+            if (!sector) {
+                errorBox.innerHTML = "<i data-lucide='alert-circle' style='width:18px;'></i> Please enter a market sector to analyze.";
+                lucide.createIcons();
+                errorBox.style.display = 'flex';
+                return;
+            }
+
+            if (!history.includes(sector)) {
+                history.unshift(sector);
+                if(history.length > 5) history.pop();
+                localStorage.setItem('tradepulse_history', JSON.stringify(history));
+                updateHistory();
+            }
+
+            errorBox.style.display = "none";
+            resultsBox.classList.remove('visible');
+            loadingOverlay.classList.add('active');
+            analyzeBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`/analyze/${encodeURIComponent(sector)}`, {
+                    method: 'GET',
+                    headers: { 'accept': 'text/markdown' }
+                });
+
+                if (!response.ok) {
+                    let errMsg = "An error occurred fetching the market data.";
+                    try {
+                        const errData = await response.json();
+                        errMsg = errData.detail || errMsg;
+                    } catch(e) {}
+                    if(response.status === 429) errMsg = "Rate limit exceeded. Please wait 60 seconds.";
+                    throw new Error(errMsg);
+                }
+
+                storedMarkdown = await response.text();
+                reportContent.innerHTML = DOMPurify.sanitize(marked.parse(storedMarkdown));
+                
+                resultsBox.classList.add('visible');
+                setTimeout(() => {
+                    resultsBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                
+            } catch (error) {
+                errorBox.innerHTML = `<i data-lucide='alert-circle' style='width:18px;'></i> ${error.message}`;
+                lucide.createIcons();
+                errorBox.style.display = 'flex';
+            } finally {
+                loadingOverlay.classList.remove('active');
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // Export Utilities
+        window.downloadPDF = function() {
+            const element = document.getElementById('report-content');
+            const opt = {
+                margin:       0.6,
+                filename:     `${sectorInput.value.trim().replace(/\s+/g, '_')}_Market_Report.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save();
+        }
+        
+        window.copyMarkdown = function() {
+            navigator.clipboard.writeText(storedMarkdown).then(() => {
+                const btn = event.currentTarget;
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = `<i data-lucide="check" style="width: 16px; height: 16px;"></i> Copied!`;
+                lucide.createIcons();
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
