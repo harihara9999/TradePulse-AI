@@ -14,8 +14,8 @@ async def collect_market_data(sector: str) -> str:
     try:
         results = []
         with DDGS() as ddgs:
-            # fetch up to 10 news/search results
-            search_results = ddgs.text(query, max_results=10)
+            # fetch up to 3 news/search results for extremely fast turnaround
+            search_results = ddgs.text(query, max_results=3)
             
             for index, r in enumerate(search_results):
                 title = r.get("title", "")

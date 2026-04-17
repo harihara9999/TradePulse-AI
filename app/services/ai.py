@@ -26,7 +26,7 @@ async def generate_analysis_report(sector: str, collected_data: str) -> str:
     Here is the most recent data and news collected from the web regarding this sector:
     {collected_data}
     
-    Based ONLY on the provided data, and your general analytical skills, generate a professional, structured markdown report with the following sections:
+    Based ONLY on the provided data, and your general analytical skills, generate a highly concise, professional markdown report with the following sections (Keep it brief to ensure fast load times, max 1 short paragraph per section):
     # Market Analysis Report: {sector.capitalize()} Sector (India)
     ## Executive Summary
     ## Current Market Trends
@@ -34,7 +34,7 @@ async def generate_analysis_report(sector: str, collected_data: str) -> str:
     ## Risks & Challenges
     ## Conclusion
     
-    Make the report professional, well-formatted, and visually easy to read. Do not hallucinate data that contradicts the findings, but synthesize it well.
+    Make the report professional, well-formatted, and visually easy to read. Do not hallucinate data that contradicts the findings, but synthesize it well. Keep it under 250 words total!
     """
 
     try:
